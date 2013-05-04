@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>{% block title %}{% endblock title %}</title>
+    {% block style %}
+
+    {% endblock style %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/noaa-web.css"
+</head>
+<body>
+<div class="content">
+    {% block content %}
+
+    {% endblock content %}
+</div>
+<script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+<script src="{{ STATIC_URL }}js/dygraphs-combined.js"></script>
+
+{% block scripts %}
+
+{% endblock scripts %}
+</body>
+</html>

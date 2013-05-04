@@ -1,0 +1,21 @@
+html, body {
+    background-color: rgb(238, 237, 208);
+    font-size: 16px;
+    font-family: helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+h1 {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+.content-wrap {
+    width: 800px;
+    min-height: 600px;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: rgb(138, 160, 126);
+}
+.graph {
+    width: 780px !important;
+}
