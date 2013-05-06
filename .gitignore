@@ -41,3 +41,5 @@ nosetests.xml
 initial_data.json
 
 *.sqlite
+
+data
