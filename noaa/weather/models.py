@@ -6,6 +6,14 @@ class WBAN(models.Model):
     WBAN is the NOAA Station ID.  This table can be updated with detailed station information if a source is found.
     """
     wban = models.CharField(max_length=5, unique=True)
+    callsign = models.CharField(max_length=4, unique=True)
+    name = models.CharField(max_length=64)
+    state = models.CharField(max_length=3)
+    location = models.CharField(max_length=64)
+    latitude = models.DecimalField(max_digits=8, decimal_places=4)
+    longitude = models.DecimalField(max_digits=8, decimal_places=4)
+    altitude = models.IntegerField()
+    tz = models.IntegerField()
 
 
 class Weather(models.Model):
