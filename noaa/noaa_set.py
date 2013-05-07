@@ -76,7 +76,7 @@ class NOAACSVParser(object):
             output.append(data)
             c += 1
             if c > 1500:
-                break
+                pass#break
 
         csvfile.close()
         return output
@@ -154,49 +154,68 @@ class WeatherData(object):
 
 
 class FileGrabber(object):
+    # TODO:  Make this a generator.
     def __init__(self):
         self.base_dir = r'C:/Users/adorkable/Downloads/{filename}'
-        self.archive_file = r'QCLCD20{yy}{mm}.zip'
-        self.report_file = r'20{yy}{mm}hourly.txt'
+        self.data_dir = 'c:/users/adorkable/documents/python/noaa-repo/data/'
+        self.archive_file = r'QCLCD{yyyy}{mm}.zip'
 
-        self.yy = 12
-        self.mm = 1
+        self.yyyy = 2012
+        self.mm = 0
 
-    def _get_yy(self):
-        return str(self.yy)
+    def _get_yyyy(self):
+        return str(self.yyyy)
 
-    def get_mm(self):
+    def _get_mm(self):
         return str(self.mm).zfill(2)
 
-    def get_next_report_filename(self):
-        # unpacks the next archive and returns the txt file name.
+    def _unpack(self):
+        zip_filename = self.archive_file.format(yyyy=self._get_yyyy(), mm=self._get_mm())
+        zipfile = ZipFile(self.base_dir.format(filename=zip_filename))
+        file_stations, file_reports = None, None
+        for filename in zipfile.namelist():
+            if 'station' in filename:
+                file_stations = filename
+                zipfile.extract(file_stations, self.data_dir)
+            if 'hourly' in filename:
+                file_reports = filename
+                zipfile.extract(file_reports, self.data_dir)
+        return self.data_dir + file_reports, self.data_dir + file_stations
 
-        zip_filename = self.archive_file.format(yy=self.get_yy(), mm=self.get_mm())
-        zip = ZipFile(self.base_dir.format(filename=zip_filename))
-        print zip.namelist()
+    def get_next_filenames(self):
+        self._increment()
+        return self._unpack()
 
-
-        return ''
+    def _increment(self):
+        if self.mm == 12:
+           self.yyyy += 1
+           self.mm = 1
+        else:
+            self.mm += 1
 
 def main():
     file_manager = FileGrabber()
     csv_parser = NOAACSVParser()
     db = WeatherData()
 
-    print file_manager.get_next_filename()
-
-    yy = 13
-    mm = '04'
-
+    go = True
+    file_reports, file_stations = file_manager.get_next_filenames()
     c = 0
-    for report in csv_parser.get_hourly_from_file('C:/Users/adorkable/Downloads/20%d%shourly.txt' % (yy, mm)):
-        if report[4] <> 'NULL':
-            db.write_report(report)
+    while go:
+        for report in csv_parser.get_hourly_from_file(file_reports):
+            if report[4] <> 'NULL':
+                db.write_report(report)
 
-        if c % 1000 == 0:
-            print report
-        c += 1
-    db.conn.commit()
+            if c % 1000 == 0:
+                print report
+            c += 1
+        db.conn.commit()
+
+        try:
+            file_reports, file_stations = file_manager.get_next_filenames()
+            print file_reports, file_stations
+        except:
+            go = False
 
 
 if __name__ == "__main__":
