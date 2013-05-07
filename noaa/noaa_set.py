@@ -74,9 +74,9 @@ class NOAACSVParser(object):
                     , self.normalize(line[self.HourlyPrecip], 'decimal')
                 )
             output.append(data)
-            c += 1
-            if c > 1500:
-                pass#break
+            #c += 1
+            #if c > 1500:
+            #    pass#break
 
         csvfile.close()
         return output
@@ -200,13 +200,16 @@ def main():
 
     go = True
     file_reports, file_stations = file_manager.get_next_filenames()
+    print file_reports, file_stations
     c = 0
     while go:
+
+
         for report in csv_parser.get_hourly_from_file(file_reports):
             if report[4] <> 'NULL':
                 db.write_report(report)
 
-            if c % 1000 == 0:
+            if c % 10000 == 0:
                 print report
             c += 1
         db.conn.commit()
