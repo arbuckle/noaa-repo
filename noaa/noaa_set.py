@@ -59,6 +59,8 @@ class NOAACSVParser(object):
         output = []
         c = 0
         for line in weather:
+            if not line:
+                continue
             data = (
                 self.normalize(line[self.WBAN])
                     , self.normalize(datetime(int(line[self.Date][0:4]), int(line[self.Date][4:6]), int(line[self.Date][6:]), int(line[self.Time][0:2]), int(line[self.Time][2:])), 'date')
@@ -161,7 +163,7 @@ class FileGrabber(object):
         self.archive_file = r'QCLCD{yyyy}{mm}.zip'
 
         self.yyyy = 2012
-        self.mm = 0
+        self.mm = 10
 
     def _get_yyyy(self):
         return str(self.yyyy)
@@ -203,12 +205,9 @@ def main():
     print file_reports, file_stations
     c = 0
     while go:
-
-
         for report in csv_parser.get_hourly_from_file(file_reports):
             if report[4] <> 'NULL':
                 db.write_report(report)
-
             if c % 10000 == 0:
                 print report
             c += 1

@@ -5,7 +5,7 @@ class WBAN(models.Model):
     """
     WBAN is the NOAA Station ID.  This table can be updated with detailed station information if a source is found.
     """
-    wban = models.CharField(max_length=5, unique=True)
+    wban = models.CharField(db_index=True, max_length=5, unique=True)
     callsign = models.CharField(max_length=4, unique=True, null=True)
     name = models.CharField(max_length=64, null=True)
     state = models.CharField(max_length=3, null=True)
@@ -39,7 +39,7 @@ class Report(models.Model):
     Report contains a selection of weather data reported from any weather station
     """
     wban = models.ForeignKey(WBAN)
-    date = models.DateTimeField()
+    date = models.DateTimeField(db_index=True)
     weather_type = models.ManyToManyField(Weather, through=Report_Weather)
     visibility = models.DecimalField(null=True, max_digits=5, decimal_places=2) # visibility in ?miles?
     temp_dry = models.IntegerField() # dry bulb temp in Fahrenheit
