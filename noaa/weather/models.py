@@ -1,4 +1,5 @@
 from django.db import models
+from weather.managers import WeatherCSVManager
 
 
 class WBAN(models.Model):
@@ -6,7 +7,7 @@ class WBAN(models.Model):
     WBAN is the NOAA Station ID.  This table can be updated with detailed station information if a source is found.
     """
     wban = models.CharField(db_index=True, max_length=5, unique=True)
-    callsign = models.CharField(max_length=4, unique=True, null=True)
+    callsign = models.CharField(max_length=4, null=True)
     name = models.CharField(max_length=64, null=True)
     state = models.CharField(max_length=3, null=True)
     location = models.CharField(max_length=64, null=True)
@@ -14,6 +15,7 @@ class WBAN(models.Model):
     longitude = models.DecimalField(max_digits=8, decimal_places=4, null=True)
     altitude = models.IntegerField(null=True)
     tz = models.IntegerField(null=True)
+    disabled = models.BooleanField(default=False, db_index=True)
 
 
 class Weather(models.Model):
@@ -51,6 +53,7 @@ class Report(models.Model):
     pressure = models.DecimalField(null=True, max_digits=4, decimal_places=2) # Pressure in ?unknown unit?
     precipitation = models.DecimalField(null=True, max_digits=5, decimal_places=2) # Hourly precip in inches
 
+    aggregates = WeatherCSVManager()
 
 # TODO:  create sets from data for each of these data points in order to determine the structure of the data and ensure that the model accounts for all possible variations.
 

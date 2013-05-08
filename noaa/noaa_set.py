@@ -26,10 +26,20 @@ class NOAACSVParser(object):
         self.SeaLevelPressure = 36
         self.HourlyPrecip = 40
 
+        self.WBAN = 0
+        self.CallSign = 2
+        self.Name = 6
+        self.State = 7
+        self.Location = 8
+        self.Latitude = 9
+        self.Longitude = 10
+        self.StationHeight = 12
+        self.TimeZone = 14
+
 
     def normalize(self, val, type = None):
         if val == 'M' or not val:
-            val = 'NULL'
+            val = None
 
         if type == 'int' and val:
             try:
@@ -44,13 +54,37 @@ class NOAACSVParser(object):
         elif type == 'weather' and val:
             val = [re.sub("[-|+]", "", x) for x in val.strip().split(' ')] or None
 
-        if val is None:
-            val = 'NULL'
-
         return val
+
+    def get_stations_from_file(self, filename):
+        csvfile = open(filename, 'r')
+        stations = csv.reader(csvfile, delimiter="|")
+        stations.next() # throw away the headers
+
+        output = []
+        for line in stations:
+            if not line:
+                continue
+
+            data = (
+                self.normalize(line[self.WBAN]),
+                self.normalize(line[self.CallSign]),
+                self.normalize(line[self.Name]),
+                self.normalize(line[self.State]),
+                self.normalize(line[self.Location]),
+                self.normalize(line[self.Latitude]),
+                self.normalize(line[self.Longitude]),
+                self.normalize(line[self.StationHeight]),
+                self.normalize(line[self.TimeZone])
+            )
+            output.append(data)
+
+        csvfile.close()
+        return output
 
 
     def get_hourly_from_file(self, filename):
+        return []
         csvfile = open(filename, 'r')
         weather = csv.reader(csvfile, delimiter=",")
 
@@ -76,9 +110,9 @@ class NOAACSVParser(object):
                     , self.normalize(line[self.HourlyPrecip], 'decimal')
                 )
             output.append(data)
-            #c += 1
-            #if c > 1500:
-            #    pass#break
+            c += 1
+            if c > 1500:
+                break
 
         csvfile.close()
         return output
@@ -138,22 +172,36 @@ class WeatherData(object):
                 , pressure, precipitation
             )
             VALUES (
-                {wban}, '{date}', {visibility}, {temp_dry}, {temp_wet}
-                , {dew_point}, {humidity}, {wind_speed}, {wind_direction}
-                , {pressure}, {precipitation}
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
             )
             RETURNING id
-        """.format(
-            wban=wban, date=report[1], visibility=report[3], temp_dry=report[4], temp_wet=report[5]
-            , dew_point=report[6], humidity=report[7], wind_speed=report[8], wind_direction=report[9]
-            , pressure=report[10], precipitation=report[11]
-        )
+        """.format()
+        data = (wban, report[1], report[3], report[4], report[5], report[6]
+                , report[7], report[8], report[9], report[10], report[11])
 
-        self.c.execute(insert)
+        self.c.execute(insert, data)
         id = self.c.fetchall()[0][0]
         for weather in weather_type:
             self.c.execute('INSERT INTO weather_report_weather (weather_id, report_id) VALUES (%d, %d)' % (weather, id))
 
+    def write_station(self, station):
+        id = self.get_wban(station[0])
+        update = """
+            UPDATE weather_wban
+            SET
+                callsign = %s
+                , name = %s
+                , state = %s
+                , location = %s
+                , latitude = %s
+                , longitude = %s
+                , altitude = %s
+                , tz = %s
+            WHERE id = %s
+        """.format()
+        station = list(station)
+        station.append(id)
+        self.c.execute(update, station[1:])
 
 class FileGrabber(object):
     # TODO:  Make this a generator.
@@ -163,7 +211,7 @@ class FileGrabber(object):
         self.archive_file = r'QCLCD{yyyy}{mm}.zip'
 
         self.yyyy = 2012
-        self.mm = 10
+        self.mm = 8
 
     def _get_yyyy(self):
         return str(self.yyyy)
@@ -205,9 +253,13 @@ def main():
     print file_reports, file_stations
     c = 0
     while go:
+        for station in csv_parser.get_stations_from_file(file_stations):
+            db.write_station(station)
+
         for report in csv_parser.get_hourly_from_file(file_reports):
             if report[4] <> 'NULL':
-                db.write_report(report)
+                #db.write_report(report)
+                pass
             if c % 10000 == 0:
                 print report
             c += 1

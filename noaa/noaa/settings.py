@@ -88,10 +88,14 @@ SECRET_KEY = 'f9wg05migii@g*xrb+is#@_pjg@4c+lxupa9(ca1xlds2h2zcr'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
+    'coffin.template.loaders.Loader',
+    )
+
+JINJA2_TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+    'django.template.loaders.filesystem.Loader',
+    )
+
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',

@@ -10,7 +10,7 @@
 
 {% block content %}
     <div class="content-wrap">
-        <h1>Denver Weather Jan 2012 through Apr 2013</h1>
+        <h1>{{ station.name }} Weather Jan 2012 through Apr 2013</h1>
 
         A few things that need to be addressed:
         <ul>
@@ -28,6 +28,17 @@
             <li><em>solution</em>:  This is only a problem because you ran out of disk space.  Try again on an EC2 instance for multiple years, but *after* the SQL framework is created.</li>
         </ul>
 
+        <h3>Station Data:</h3>
+        <ul>
+            <li><strong>wban: </strong>{{ station.wban }}</li>
+            <li><strong>state: </strong>{{ station.state }}</li>
+            <li><strong>name: </strong>{{ station.name }}</li>
+            <li><strong>location: </strong>{{ station.location }}</li>
+            <li><strong>latitude: </strong>{{ station.latitude }}</li>
+            <li><strong>longitude: </strong>{{ station.longitude }}</li>
+            <li><strong>altitude: </strong>{{ station.altitude }}</li>
+        </ul>
+
         <div class="graph" id="Weather"></div>
 
     </div>
@@ -42,12 +53,12 @@
                 new Dygraph(
                         document.getElementById("Weather"),
                         //'/static/csv/april.csv',
-                        '/csv/41/',
+                        '/csv/{{ station.id }}/',
                         {
                             rollPeriod: 8,
                             //valueRange: [2000, 20000],
                             showRoller: true,
-                            title: "Hourly Temperature Data from Denver Intl Airport",
+                            title: "Hourly Temperature Data from {{ station.location }}",
                             //ylabel: '',
                             legend: 'always',
                             labelsDivStyles: { 'textAlign': 'right' }

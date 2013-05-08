@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from weather.views import Weather, WeatherCSV
+from weather.views import Weather, WeatherCSV, Stations
 
 
 # Uncomment the next two lines to enable the admin:
@@ -8,7 +8,8 @@ from weather.views import Weather, WeatherCSV
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', Weather.as_view(), name='weather'),
+    url(r'^$', Stations.as_view(), name='home'),
+    url(r'^(?P<id>\d+)/$', Weather.as_view(), name='weather'),
     url(r'^csv/(?P<id>\d+)/$', WeatherCSV.as_view(), name='weather-csv'),
     # url(r'^noaa/', include('noaa.foo.urls')),
 
