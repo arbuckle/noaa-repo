@@ -52,14 +52,12 @@
         graph.push(
                 new Dygraph(
                         document.getElementById("Weather"),
-                        //'/static/csv/april.csv',
                         '/csv/{{ station.id }}/',
                         {
-                            rollPeriod: 8,
-                            //valueRange: [2000, 20000],
+                            rollPeriod: 1,
                             showRoller: true,
+                            customBars: true,
                             title: "Hourly Temperature Data from {{ station.location }}",
-                            //ylabel: '',
                             legend: 'always',
                             labelsDivStyles: { 'textAlign': 'right' }
                         }

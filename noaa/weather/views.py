@@ -36,7 +36,7 @@ class WeatherCSV(TemplateView):
 
         context.update({
             "wban": [wban_id],
-            "records": Report.aggregates.reports_for_wban(wban_id = wban_id)
+            "records": Report.aggregates.daily(wban_id = wban_id)
         })
 
         return context
