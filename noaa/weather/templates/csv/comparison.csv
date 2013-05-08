@@ -1,0 +1,3 @@
+date,{% for id in wban %}{{ id }}{% if not loop.last%},{% endif %}{% endfor %}
+{% for record in records%} {{ record.date.strftime("%Y-%m-%d %H:%M") }},{{ record.temp_dry_high_1 }};{{ record.temp_dry_1 }};{{ record.temp_dry_low_1 }},{{ record.temp_dry_high_2 }};{{ record.temp_dry_2 }};{{ record.temp_dry_low_2 }}
+{% endfor %}

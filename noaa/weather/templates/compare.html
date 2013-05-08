@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    NOAA Data Comparing {% for station in stations %}{{ station.name }}{% if not loop.last %} to {% endif %}{% endfor %}
+{% endblock title %}
+
+{% block style %}
+
+{% endblock style %}
+
+{% block content %}
+    <div class="content-wrap">
+    {% for station in stations %}
+        <h1>{{ station.name }} Weather Jan 2012 through Apr 2013</h1>
+
+        <h3>Station Data:</h3>
+        <ul>
+            <li><strong>wban: </strong>{{ station.wban }}</li>
+            <li><strong>state: </strong>{{ station.state }}</li>
+            <li><strong>name: </strong>{{ station.name }}</li>
+            <li><strong>location: </strong>{{ station.location }}</li>
+            <li><strong>latitude: </strong>{{ station.latitude }}</li>
+            <li><strong>longitude: </strong>{{ station.longitude }}</li>
+            <li><strong>altitude: </strong>{{ station.altitude }}</li>
+        </ul>
+    {% endfor %}
+
+        <div class="graph" id="Weather"></div>
+
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        graph = [];
+        var blockRedraw = false;
+        var initialized = false;
+        graph.push(
+                new Dygraph(
+                        document.getElementById("Weather"),
+                        "{{ 'weather-compare-csv'|url(stations[0].id, stations[1].id) }}",
+                        {
+                            rollPeriod: 1,
+                            showRoller: true,
+                            customBars: true,
+                            title: "Daily Comparison {% for station in stations %}{{ station.name }}{% if not loop.last %} to {% endif %}{% endfor %}",
+                            legend: 'always',
+                            labelsDivStyles: { 'textAlign': 'right' }
+                        }
+                )
+        )
+    </script>
+{% endblock scripts %}

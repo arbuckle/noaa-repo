@@ -39,7 +39,7 @@
             marker = new google.maps.Marker({
                 position: new google.maps.LatLng({{ station.latitude }}, {{ station.longitude }}),
                 map: map,
-                title: '{{ station.name|escapejs }}-{{ station.location|escapejs }}'
+                title: '{{ station.id }} - {{ station.name|escapejs }}-{{ station.location|escapejs }}'
             });
                google.maps.event.addListener(marker, 'click', function(){
                    window.location.href = "{{ "weather"|url(station.id) }}"
