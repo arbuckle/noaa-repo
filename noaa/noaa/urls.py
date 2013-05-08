@@ -1,21 +1,12 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 from weather.views import Weather, WeatherCSV, Stations
 
-
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
-
 urlpatterns = patterns('',
-    # Examples:
-    url(r'^$', Stations.as_view(), name='home'),
-    url(r'^(?P<id>\d+)/$', Weather.as_view(), name='weather'),
-    url(r'^csv/(?P<id>\d+)/$', WeatherCSV.as_view(), name='weather-csv'),
-    # url(r'^noaa/', include('noaa.foo.urls')),
+    url(r'^$', Stations.as_view(), name='station'),
 
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    # highly impure resource-oriented architecture.
+    # Ideally, HTML would be served from one domain, JSON from another, and all URLs would be identical between the two.
+    # Do accomplish this in dev, hosts file entries would need to be added and the application modified to read the source domain.
+    url(r'^station/(?P<id>\d+)/$', Weather.as_view(), name='weather'),
+    url(r'^station/(?P<id>\d+)csv/$', WeatherCSV.as_view(), name='weather-csv'),
 )

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    NOAA Data for Denver CO
+    NOAA Data for {{ station.name }}
 {% endblock title %}
 
 {% block style %}
@@ -11,22 +11,6 @@
 {% block content %}
     <div class="content-wrap">
         <h1>{{ station.name }} Weather Jan 2012 through Apr 2013</h1>
-
-        A few things that need to be addressed:
-        <ul>
-            <li>Using any sort of roll period on the hourly dataset results in the daily high/low being lost.</li>
-            <li><em>solution</em>: calculate the daily highs and lows and add them to each hourly record as error bars.</li>
-            <li>Comparing annual data isn't possible with the current architecture.</li>
-            <li><em>solution</em>: You're gonna have to dive into SQL for that.  Might be a fun little flask app.</li>
-            <li>It's not clear whether all the measurements came from the same weather station.</li>
-            <li><em>solution</em>: dump all the weather data into SQL and filter by station, or target specific stations in the parse script.</li>
-            <li>Weather events are noted in the logs, but aren't displayed on the graph (they don't fit a timeseries.)</li>
-            <li><em>solution</em>: research dygraph annotations.  Weather events may be represented as points on the chart with an icon. </li>
-            <li>Roll period won't make sense to anyone.</li>
-            <li><em>solution</em>:  add a label.</li>
-            <li>Parse script requires a lot of manual intervention: download file, open zip, extract csv, etc.</li>
-            <li><em>solution</em>:  This is only a problem because you ran out of disk space.  Try again on an EC2 instance for multiple years, but *after* the SQL framework is created.</li>
-        </ul>
 
         <h3>Station Data:</h3>
         <ul>
@@ -50,18 +34,18 @@
         var blockRedraw = false;
         var initialized = false;
         graph.push(
-                new Dygraph(
-                        document.getElementById("Weather"),
-                        '/csv/{{ station.id }}/',
-                        {
-                            rollPeriod: 1,
-                            showRoller: true,
-                            customBars: true,
-                            title: "Hourly Temperature Data from {{ station.location }}",
-                            legend: 'always',
-                            labelsDivStyles: { 'textAlign': 'right' }
-                        }
-                )
+            new Dygraph(
+                document.getElementById("Weather"),
+                "{{ 'weather-csv'|url(station.id) }}",
+                {
+                    rollPeriod: 1,
+                    showRoller: true,
+                    customBars: true,
+                    title: "Hourly Temperature Data from {{ station.location }}",
+                    legend: 'always',
+                    labelsDivStyles: { 'textAlign': 'right' }
+                }
+            )
         )
     </script>
 {% endblock scripts %}
