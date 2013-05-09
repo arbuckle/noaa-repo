@@ -5,7 +5,9 @@
 {% endblock title %}
 
 {% block style %}
-
+    <style>
+        #map-canvas {width: 800px; height: 600px;}
+    </style>
 {% endblock style %}
 
 {% block content %}
@@ -25,6 +27,9 @@
 
         <div class="graph" id="Weather"></div>
 
+        <h3>Compare this weather station to another:</h3>
+        <div id="map-canvas"></div>
+
     </div>
 {% endblock content %}
 
@@ -43,9 +48,38 @@
                     customBars: true,
                     title: "Hourly Temperature Data from {{ station.location }}",
                     legend: 'always',
-                    labelsDivStyles: { 'textAlign': 'right' }
+                    labelsDivStyles: { 'textAlign': 'right' },
+                    labels: ["date", "{{ station.name }}"]
                 }
             )
         )
     </script>
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFbpJc0RjsSyQ9Mucdio3PvK-4w-SK8j0&sensor=false"></script>
+    <script>
+        function initialize() {
+            var mapOptions = {
+                center: new google.maps.LatLng(40.0354, -95.5409),
+                zoom: 4,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map-canvas"),
+                    mapOptions);
+
+            var marker;
+        {% for alt_station in stations %}
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng({{ alt_station.latitude }}, {{ alt_station.longitude }}),
+                map: map,
+                title: '{{ alt_station.id }} - {{ alt_station.name|escapejs }}-{{ alt_station.location|escapejs }}'
+            });
+            google.maps.event.addListener(marker, 'click', function(){
+                window.location.href = "{{ "weather-compare"|url(station.id, alt_station.id) }}"
+            });
+        {% endfor %}
+        }
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+
 {% endblock scripts %}

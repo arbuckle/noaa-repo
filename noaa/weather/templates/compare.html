@@ -45,7 +45,8 @@
                             customBars: true,
                             title: "Daily Comparison {% for station in stations %}{{ station.name }}{% if not loop.last %} to {% endif %}{% endfor %}",
                             legend: 'always',
-                            labelsDivStyles: { 'textAlign': 'right' }
+                            labelsDivStyles: { 'textAlign': 'right' },
+                            labels: ["date", {% for station in stations %}"{{ station.name }}"{% if not loop.last %},{% endif %}{% endfor %}]
                         }
                 )
         )

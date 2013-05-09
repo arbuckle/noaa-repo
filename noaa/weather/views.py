@@ -21,7 +21,8 @@ class Weather(TemplateView):
         wban_id = kwargs.get('id', None)
 
         context.update({
-            "station": WBAN.objects.get(id=wban_id)
+            "station": WBAN.objects.get(id=wban_id),
+            "stations": WBAN.objects.filter(disabled=False).exclude(id=wban_id).order_by('state', 'name', 'location')
         })
         return context
 
