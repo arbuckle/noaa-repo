@@ -100,8 +100,8 @@ class WeatherCSVManager(models.Manager):
                 "weather_report_weather" rw ON r.id = rw.report_id
                 LEFT OUTER JOIN "weather_weather" w ON w.id = rw.weather_id
                 WHERE "r"."wban_id" = %s -- ARGUMENT
-                AND "r"."date" BETWEEN %s AND %s
                 GROUP BY "report_date"
             ) agg
+            WHERE report_date BETWEEN %s AND %s
         """, [season, wban_id, start, end])
 
