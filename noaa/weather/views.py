@@ -20,9 +20,16 @@ class Weather(TemplateView):
         context = kwargs
         wban_id = kwargs.get('id', None)
 
+
         context.update({
             "station": WBAN.objects.get(id=wban_id),
-            "stations": WBAN.objects.filter(disabled=False).exclude(id=wban_id).order_by('state', 'name', 'location')
+            "stations": WBAN.objects.filter(disabled=False).exclude(id=wban_id).order_by('state', 'name', 'location'),
+            "seasons": (
+                list(Report.aggregates.seasonal(wban_id, 'winter'))[0],
+                list(Report.aggregates.seasonal(wban_id, 'spring'))[0],
+                list(Report.aggregates.seasonal(wban_id, 'summer'))[0],
+                list(Report.aggregates.seasonal(wban_id, 'fall'))[0]
+            )
         })
         return context
 

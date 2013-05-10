@@ -63,3 +63,45 @@ class WeatherCSVManager(models.Manager):
                 GROUP BY "report_date"
             ) agg2 ON agg1.report_date = agg2.report_date
         """, [wban_id_1, wban_id_2])
+
+    def seasonal(self, wban_id, season):
+        if season == 'winter':
+            start, end = '2011-12-21', '2012-03-20'
+        elif season == 'spring':
+            start, end = '2012-03-20', '2012-06-21'
+        elif season == 'summer':
+            start, end = '2012-6-21', '2012-09-22'
+        else:
+            start, end = '2012-09-22', '2012-12-21'
+
+        return self.raw("""
+            SELECT 1 "id"
+                , CAST(%s AS VARCHAR(6)) "season"
+                , CAST(avg(temp_dry) AS INT) "temp_dry"
+                , CAST(avg(temp_dry_high) AS INT) "temp_dry_high"
+                , CAST(avg(temp_dry_low) AS INT) "temp_dry_low"
+                , CAST(avg(humidity) AS INT) "humidity"
+                , sum(precipitation) "precipitation"
+                , sum(CASE WHEN precipitation is not null THEN 1 ELSE 0 END) "precipitation_days"
+                , sum(CASE WHEN weather like '%%SN%%' THEN 1 ELSE 0 END) "snow_days"
+                , CAST(avg(wind_speed) AS INT) "wind_speed"
+                , CAST(avg(wind_direction) AS INT) "wind_direction" -- totally wrong
+            FROM (
+                SELECT  date_trunc('day', "r"."date") as "report_date"
+                    , CAST(avg("r"."temp_dry") AS INT) "temp_dry"
+                    , CAST(max("r"."temp_dry") AS INT) "temp_dry_high"
+                    , CAST(min("r"."temp_dry") AS INT) "temp_dry_low"
+                    , sum("r"."precipitation") "precipitation"
+                    , avg("r"."humidity") "humidity"
+                    , avg("r"."wind_speed") "wind_speed"
+                    , avg("r"."wind_direction") "wind_direction" -- totally wrong
+                    , string_agg(w.code, ', ') "weather"
+                FROM "weather_report" r LEFT OUTER JOIN
+                "weather_report_weather" rw ON r.id = rw.report_id
+                LEFT OUTER JOIN "weather_weather" w ON w.id = rw.weather_id
+                WHERE "r"."wban_id" = %s -- ARGUMENT
+                AND "r"."date" BETWEEN %s AND %s
+                GROUP BY "report_date"
+            ) agg
+        """, [season, wban_id, start, end])
+
