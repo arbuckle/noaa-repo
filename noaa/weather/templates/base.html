@@ -56,14 +56,22 @@
         var blockRedraw = false;
         var initialized = false;
 
-        function drawLegend (e, x, pts, row) {
+        function drawLegend (e, date, pts, row) {
             var i,
-                    data = graph.rawData_[row],
-                    c_series = pts.length,
-                    template_data = {
-                        date: x,
-                        stations: []
-                    };
+                c_raw = graph.rawData_.length;
+            if (!graph.dataHash_) {
+                graph.dataHash_ = {};
+                for (i = 0; i < c_raw; i ++) {
+                    graph.dataHash_[graph.rawData_[i][0]] = i;
+                }
+            }
+
+            var data = graph.rawData_[graph.dataHash_[date]],
+                c_series = pts.length,
+                template_data = {
+                    date: date,
+                    stations: []
+                };
 
             for (i=0; i < c_series; i ++) {
                 template_data.stations.push({
