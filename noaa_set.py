@@ -2,11 +2,11 @@
 
 
 import csv
-from zipfile import ZipFile
 import psycopg2
 import re
 
 from datetime import datetime
+from zipfile import ZipFile
 
 
 class NOAACSVParser(object):
@@ -84,14 +84,12 @@ class NOAACSVParser(object):
 
 
     def get_hourly_from_file(self, filename):
-        return []
         csvfile = open(filename, 'r')
         weather = csv.reader(csvfile, delimiter=",")
 
         weather.next() # throw away the headers
 
         output = []
-        c = 0
         for line in weather:
             if not line:
                 continue
@@ -110,9 +108,6 @@ class NOAACSVParser(object):
                     , self.normalize(line[self.HourlyPrecip], 'decimal')
                 )
             output.append(data)
-            c += 1
-            if c > 1500:
-                break
 
         csvfile.close()
         return output
@@ -206,12 +201,15 @@ class WeatherData(object):
 class FileGrabber(object):
     # TODO:  Make this a generator.
     def __init__(self):
-        self.base_dir = r'C:/Users/adorkable/Downloads/{filename}'
-        self.data_dir = 'c:/users/adorkable/documents/python/noaa-repo/data/'
+#        self.base_dir = r'C:/Users/adorkable/Downloads/{filename}'
+#        self.data_dir = 'c:/users/adorkable/documents/python/noaa-repo/data/'
+        self.base_dir = r'/home/ubuntu/noaa_data/{filename}'
+        self.data_dir = r'/home/ubuntu/noaa_data/{filename}'
+
         self.archive_file = r'QCLCD{yyyy}{mm}.zip'
 
-        self.yyyy = 2012
-        self.mm = 8
+        self.yyyy = 2011
+        self.mm = 0
 
     def _get_yyyy(self):
         return str(self.yyyy)
@@ -257,9 +255,8 @@ def main():
             db.write_station(station)
 
         for report in csv_parser.get_hourly_from_file(file_reports):
-            if report[4] <> 'NULL':
-                #db.write_report(report)
-                pass
+            if report[4]:
+                db.write_report(report)
             if c % 10000 == 0:
                 print report
             c += 1

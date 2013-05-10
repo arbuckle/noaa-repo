@@ -1,21 +1,119 @@
+/* GLOBAL STYLES */
 html, body {
-    background-color: rgb(238, 237, 208);
+    width: 100%;
+    height: 100%;
+    background-color: #05003a;
     font-size: 16px;
     font-family: helvetica, sans-serif;
     margin: 0;
     padding: 0;
 }
+
+#sidebar {
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 20%;
+    height: 100%;
+    background-color: #05003a;
+    color: #fffed4;
+}
+
+
+.unstyled {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.hide {display:none;}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.7em;
+    text-decoration: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.about {
+    margin: 20px;
+}
+
+#sidebar a:link {color:#fffed4;}
+#sidebar a:visited {color:#fffed4;}
+#sidebar a:hover {color:#fffed4;}
+#sidebar a:active {color:#fffed4;}
+
+.footer {
+    padding: 20px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.footer li {
+    line-height: 1.5em;
+    font-weight: bold;
+}
+
+/*LAYOUT STYLES*/
+.clear {clear:both;}
+.column {float:left;}
+.column.one {width:8.33%}
+.column.two {width:16.66%}
+.column.three {width:25%}
+.column.four {width:33.33%}
+.column.five {width:41.66%}
+.column.six {width:50%}
+.column.seven {width:58.33%}
+.column.eight {width:66.66%}
+.column.nine {width:75%}
+.column.ten {width:83.33%}
+.column.eleven {width:91.66%}
+.column.twelve {width:100%}
+
+/* CONTENT STYLES */
+#content {
+    min-height: 100%;
+    margin-left: 20%;
+    background-color: #adff2f;
+}
+
+.map-stations {width: 100%; height: 500px;}
+.map-compare {width: 100%; height: 400px}
+
+
+
+
+
 h1 {
     font-size: 1.2em;
     margin: 10px 0;
+    text-align: center;
 }
+
+
 .content-wrap {
-    width: 800px;
-    min-height: 600px;
-    margin: 0 auto;
-    padding: 10px;
-    background-color: rgb(138, 160, 126);
+    width: 80%;
+    min-height: 100%;
+    padding: 20px 20px 80px;
+    background-color: rgb(184, 186, 199);
 }
 .graph {
-    width: 780px !important;
+    width: 80% !important;
+    float:left;
 }
+.legend {
+    width: 18%;
+    padding: 1%;
+    float: left;
+    background-color: rgb(224, 224, 224);
+    height: 320px;
+    border-radius: 5px;
+    border: 1px dashed rgb(179, 179, 179);
+    margin-left: 2%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+

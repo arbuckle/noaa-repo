@@ -5,17 +5,19 @@
 {% endblock title %}
 
 {% block style %}
-<style>
-    #map-canvas {width: 800px; height: 700px;}
-</style>
+
 {% endblock style %}
+
+{% block instructions %}
+    Choose a weather station from the map to the right to get started.
+{% endblock instructions %}
 
 {% block content %}
     <div class="content-wrap">
-        <div id="map-canvas"></div>
+        <div id="map-canvas" class="map-stations"></div>
         <ul>
             {% for station in stations %}
-            <li><a href="/{{ station.id }}/">{{ station.state }} - {{ station.callsign }} - {{ station.name }} - {{ station.location }}</a></li>
+            <li><a href="{{ "weather"|url(station.id) }}">{{ station.state }} - {{ station.callsign }} - {{ station.name }} - {{ station.location }}</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -27,8 +29,8 @@
     <script>
         function initialize() {
             var mapOptions = {
-                center: new google.maps.LatLng(40.0354, -95.5409),
-                zoom: 4,
+                center: new google.maps.LatLng(49.001844,-111.2146),
+                zoom: 3,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
             var map = new google.maps.Map(document.getElementById("map-canvas"),

@@ -8,16 +8,77 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/noaa-web.css"
 </head>
 <body>
-<div class="content">
-    {% block content %}
+    <section id="sidebar">
+        <a href="{{ 'station'|url() }}" class="logo">WeatherPal</a>
+        <div class="about">
+            <p>
+                Weather Pal makes it easy to compare weather from any two locations in the US.
+            </p>
+            <p class="instructions">
+                {% block instructions %}
 
-    {% endblock content %}
-</div>
-<script src="{{ STATIC_URL }}js/jquery.min.js"></script>
-<script src="{{ STATIC_URL }}js/dygraphs-combined.js"></script>
+                {% endblock instructions %}
+            </p>
+        </div>
 
-{% block scripts %}
+        <ul class="footer unstyled">
+            <li>Copyright 2013 <a href="mailto:david@catto5k.com">David Arbuckle</a></li>
+        </ul>
+    </section>
+    <section id="content">
+        {% block content %}
 
-{% endblock scripts %}
+        {% endblock content %}
+    </section>
+
+    <script type="mango/template" id="TemplateLegend">
+        {% raw %}
+            <strong>Legend:</strong>
+            <p>
+                {{ date|date:"N d, Y" }}
+            </p>
+            {% for station in stations %}
+                <ul class="unstyled">
+                    <li><strong>{{ station.name }}</strong></li>
+                    <li>High: {{ station.high }}F</li>
+                    <li>Low: {{ station.low }}F</li>
+                    <li>Avg: {{ station.avg }}F</li>
+                </ul>
+            {% endfor %}
+        {% endraw %}
+    </script>
+
+    <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}js/mango.js"></script>
+    <script src="{{ STATIC_URL }}js/dygraphs-combined.js"></script>
+    <script>
+        var legendTemplate = mango.compile(document.getElementById('TemplateLegend').innerHTML);
+        var blockRedraw = false;
+        var initialized = false;
+
+        function drawLegend (e, x, pts, row) {
+            var i,
+                    data = graph.rawData_[row],
+                    c_series = pts.length,
+                    template_data = {
+                        date: x,
+                        stations: []
+                    };
+
+            for (i=0; i < c_series; i ++) {
+                template_data.stations.push({
+                    name: pts[i].name,
+                    high: data[i+1][0],
+                    avg: data[i+1][1],
+                    low: data[i+1][2]
+                });
+            }
+
+            document.getElementById('WeatherLegend').innerHTML = legendTemplate(template_data);
+        }
+    </script>
+
+    {% block scripts %}
+    {% endblock scripts %}
 </body>
 </html>

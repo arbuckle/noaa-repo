@@ -3,55 +3,72 @@
 {% block title %}
     NOAA Data for {{ station.name }}
 {% endblock title %}
-
 {% block style %}
-    <style>
-        #map-canvas {width: 800px; height: 600px;}
-    </style>
 {% endblock style %}
+
+{% block instructions %}
+
+{% endblock instructions %}
 
 {% block content %}
     <div class="content-wrap">
-        <h1>{{ station.name }} Weather Jan 2012 through Apr 2013</h1>
+        <h1 class="section-title">Temperature Data for {{ station.location }}</h1>
 
-        <h3>Station Data:</h3>
-        <ul>
-            <li><strong>wban: </strong>{{ station.wban }}</li>
-            <li><strong>state: </strong>{{ station.state }}</li>
-            <li><strong>name: </strong>{{ station.name }}</li>
-            <li><strong>location: </strong>{{ station.location }}</li>
-            <li><strong>latitude: </strong>{{ station.latitude }}</li>
-            <li><strong>longitude: </strong>{{ station.longitude }}</li>
-            <li><strong>altitude: </strong>{{ station.altitude }}</li>
-        </ul>
+        {% include 'includes/chart.html' %}
+        {% include 'includes/advertisement.html' %}
 
-        <div class="graph" id="Weather"></div>
+        <div class="extended-info">
+            <div class="station-data column five">
+                {% include 'includes/station-data.html' %}
 
-        <h3>Compare this weather station to another:</h3>
-        <div id="map-canvas"></div>
+                <div class="station-weather">
+                    2012 averages:
 
+                    <br><br>
+                    winter: 12/21 thru 3/20<br>
+                    spring: 3/20 thru 6/21<br>
+                    summer: 6/21 thru 9/22<br>
+                    fall: 9/22 thru 12/21<br>
+
+                    Avg High Temp<br>
+                    Avg Low Temp<br>
+                    Avg Temp<br>
+                    Inches of precipitation<br>
+                    Days with precipitation<br>
+                    Days of snow<br>
+                    Wind speed<br>
+                    Prevailing Wind Direction?<br>
+                    Humidity<br>
+
+                </div>
+            </div>
+
+
+            <div class="compare column seven">
+                <h3>Compare this weather station to another:</h3>
+                <div id="map-canvas" class="map-compare"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
     </div>
 {% endblock content %}
 
 {% block scripts %}
     <script>
-        graph = [];
-        var blockRedraw = false;
-        var initialized = false;
-        graph.push(
-            new Dygraph(
-                document.getElementById("Weather"),
-                "{{ 'weather-csv'|url(station.id) }}",
-                {
-                    rollPeriod: 1,
-                    showRoller: true,
-                    customBars: true,
-                    title: "Hourly Temperature Data from {{ station.location }}",
-                    legend: 'always',
-                    labelsDivStyles: { 'textAlign': 'right' },
-                    labels: ["date", "{{ station.name }}"]
-                }
-            )
+        var graph = new Dygraph(
+            document.getElementById("Weather"),
+            "{{ 'weather-csv'|url(station.id) }}",
+            {
+                rollPeriod: 1,
+                showRoller: true,
+                customBars: true,
+                legend: 'always',
+                labelsDiv: document.getElementById('DummyLegend'),
+                labels: ["date", "{{ station.name }}"],
+                //colors: []
+                showRangeSelector: true,
+                highlightCallback: drawLegend
+            }
         )
     </script>
 
@@ -59,8 +76,8 @@
     <script>
         function initialize() {
             var mapOptions = {
-                center: new google.maps.LatLng(40.0354, -95.5409),
-                zoom: 4,
+                center: new google.maps.LatLng({{ station.latitude }}, {{ station.longitude }}),
+                zoom: 6,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
             var map = new google.maps.Map(document.getElementById("map-canvas"),
@@ -77,6 +94,13 @@
                 window.location.href = "{{ "weather-compare"|url(station.id, alt_station.id) }}"
             });
         {% endfor %}
+        //TODO:  Test This!!
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng({{ station.latitude }}, {{ station.longitude }}),
+                map: map,
+                title: '{{ station.id }} - {{ station.name|escapejs }}-{{ station.location|escapejs }}',
+                icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+            })
         }
 
         google.maps.event.addDomListener(window, 'load', initialize);
