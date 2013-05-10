@@ -1,0 +1,42 @@
+**Descriptors:
+-	Light intensity
+blank	Moderate intensity
++	Heavy intensity
+
+VC	In the vicinity
+MI	Shallow	
+PR	Partial
+BC	Patches
+DR	Low drifting
+BL	Blowing
+SH	Showers
+TS	Thunderstorm
+FZ	Freezing
+
+**Precipitation:
+RA	Rain
+DZ	Drizzle
+SN	Snow
+SG	Snow Grains
+IC	Ice Crystals
+PL	Ice Pellets
+GR	Hail
+GS	Small Hail
+UP	Unknown Precipitation
+
+** Obscuration:
+FG	Fog
+VA	Volcanic Ash
+BR	Mist
+HZ	Haze
+DU	Widespread Dust
+FU	Smoke
+SA	Sand
+PY	Spray
+
+** Other
+SQ	Squall
+PO	Dust or Sand Whirls
+DS	Duststorm
+SS	Sandstorm
+FC	Funnel Cloud

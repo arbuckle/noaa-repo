@@ -1,4 +1,5 @@
 # download zipfiles from NOAA
+import subprocess
 
 from datetime import datetime, timedelta
 
@@ -15,4 +16,4 @@ def get_urls():
 for url in get_urls():
 	filepath = 'http://cdo.ncdc.noaa.gov/qclcd_ascii/'
 	#urllib.urlretrieve(filepath + url, filename=url)
-	subprocess.call(['wget', filepath + url, "--limit-rate=512"])
+	subprocess.call(['wget', filepath + url])

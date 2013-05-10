@@ -1,0 +1,35 @@
+# run ec2_setup.sh
+
+
+# configure postgres
+sudo nano /etc/postgresql/9.2/main/postgresql.conf
+    Uncomment:
+    	#listen_addresses = 'localhost'
+    	#password_encryption = on
+    Change:
+        data_directory = '/mnt/postgresql/9.2/main'
+
+sudo nano /etc/postgresql/9.2/main/pg_hba.conf
+    local all all peer->md5
+    (add line) host all all 0.0.0.0/0 md5
+
+
+
+# set up postgres user acct
+sudo su postgres
+psql -c "ALTER USER postgres WITH PASSWORD '09928177'; CREATE ROLE noaa_user WITH LOGIN ENCRYPTED PASSWORD 'mfc104~0b';" template1
+#psql -c "DROP DATABASE noaa"
+psql -c "CREATE DATABASE noaa
+                       WITH OWNER = noaa_user
+                       ENCODING = 'UTF8'
+                       TABLESPACE = pg_default
+                       CONNECTION LIMIT = -1;"
+
+
+# get repo (ftp it over)
+
+
+# initialize database (broken)
+cd /home/ubuntu/noaa_env/noaa-repo/noaa/ && python manage.py syncdb && python manage.py schemamigration weather --initial && python manage.py migrate weather && python manage.py migrate weather --fake
+
+# run script ya
