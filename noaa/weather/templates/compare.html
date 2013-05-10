@@ -8,6 +8,14 @@
 
 {% endblock style %}
 
+{% block instructions %}
+    You're looking at historical weather data comparing
+    {% for station in stations %}
+        <a href="{{ "weather"|url(station.id) }}">{{ station.location }}</a> in {{ station.name }}{% if station.state %}, {{ station.state }}{% endif %}
+        {% if not loop.last %} with {% else %}.{% endif %}
+    {% endfor %}
+{% endblock instructions %}
+
 {% block content %}
     <div class="content-wrap">
         <h1 class="section-title">Comparing {% for station in stations %}{{ station.name }}{% if not loop.last %} and {% endif %}{% endfor %}</h1>
