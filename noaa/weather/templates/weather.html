@@ -7,6 +7,9 @@
 {% endblock style %}
 
 {% block instructions %}
+    You're looking at historical weather data from {{ station.location }}
+    in {{ station.name }}{% if station.state %}, {{ station.state }}{% endif %}.
+    <br><br>
 
 {% endblock instructions %}
 
@@ -22,28 +25,50 @@
                 {% include 'includes/station-data.html' %}
 
                 <div class="station-weather">
-                    2012 averages:
-
-                    <br><br>
-                    winter: 12/21 thru 3/20<br>
-                    spring: 3/20 thru 6/21<br>
-                    summer: 6/21 thru 9/22<br>
-                    fall: 9/22 thru 12/21<br>
-
-                    Avg High Temp<br>
-                    Avg Low Temp<br>
-                    Avg Temp<br>
-                    Inches of precipitation<br>
-                    Days with precipitation<br>
-                    Days of snow<br>
-                    Wind speed<br>
-                    Prevailing Wind Direction?<br>
-                    Humidity<br>
-
+                    <div class="tabs-parent seasons box">
+                        <ul class="tabs-header unstyled">
+                            {% for season in seasons %}
+                                <li class="tab {% if loop.first %}active{% endif %}">{{ season.season }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% for season in seasons %}
+                            <div class="tab-content {% if not loop.first %}hide{% endif %}" id="Tab-{{ season.season }}">
+                                <table class="seasons-data">
+                                    <tbody>
+                                    <tr>
+                                        <td class="label">Avg Temp</td><td class="value">{{ season.temp_dry }}F</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Avg High</td><td class="value">{{ season.temp_dry_high }}F</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Avg Low</td><td class="value">{{ season.temp_dry_low }}F</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Avg Humidity</td><td class="value">{{ season.humidity }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Total Rainfall</td><td class="value">{{ season.precipitation }}in</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Days of Rain</td><td class="value">{{ season.precipitation_days }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Days of Snow</td><td class="value">{{ season.snow_days }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Avg Wind Speed</td><td class="value">{{ season.wind_speed }}mph</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Prevailing Wind</td><td class="value">{{ season.wind_direction }}deg</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-
-
             <div class="compare column seven">
                 <h3>Compare this weather station to another:</h3>
                 <div id="map-canvas" class="map-compare"></div>
@@ -54,12 +79,34 @@
 {% endblock content %}
 
 {% block scripts %}
+
+    <script>
+        // quick-and-dirty tab behavior handler for seasonal tabbed interface.
+        $('.tabs-parent').on('click', '.tab', function(event){
+            var $this = $(this),
+                $tabs = $this.parent().siblings('.tab-content'),
+                seasonID = '#Tab-' + $this.text();
+
+            if ($this.hasClass('active')) {
+                return;
+            }
+
+            // toggle tab class
+            $this.addClass('active');
+            $this.siblings().removeClass('active');
+
+            // toggle content visibility
+            $tabs.slideUp();
+            $(seasonID).slideDown();
+        });
+    </script>
+
     <script>
         var graph = new Dygraph(
             document.getElementById("Weather"),
             "{{ 'weather-csv'|url(station.id) }}",
             {
-                rollPeriod: 1,
+                rollPeriod: 7,
                 showRoller: true,
                 customBars: true,
                 legend: 'always',

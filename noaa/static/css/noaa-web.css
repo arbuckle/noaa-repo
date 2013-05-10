@@ -108,12 +108,43 @@ h1 {
     width: 18%;
     padding: 1%;
     float: left;
-    background-color: rgb(224, 224, 224);
     height: 320px;
+    margin-left: 2%;
+}
+
+.box {
+    background-color: rgb(224, 224, 224);
     border-radius: 5px;
     border: 1px dashed rgb(179, 179, 179);
-    margin-left: 2%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
 }
 
+
+.seasons {
+    padding: 5px;
+    width: 90%;
+    margin: 20px 0;
+}
+
+.tabs-header {
+    margin-bottom: 5px;
+}
+
+.tabs-header .tab {
+    display: inline-block;
+    line-height: 1.5;
+    padding: 0 17px;
+    font-weight: bold;
+    border-bottom: 1px solid black;
+}
+.tabs-header .tab.active {
+    border-bottom: 3px solid white;
+}
+
+
+.label {
+    padding: 0 10px;
+    line-height: 1.5;
+    font-weight: bold;
+}
