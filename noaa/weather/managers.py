@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, connection
 
 class WeatherCSVManager(models.Manager):
 
@@ -71,19 +71,22 @@ class WeatherCSVManager(models.Manager):
             start, end = '2012-03-20', '2012-06-21'
         elif season == 'summer':
             start, end = '2012-6-21', '2012-09-22'
-        else:
+        elif season == 'fall':
             start, end = '2012-09-22', '2012-12-21'
+        else:
+            start, end = '2011-12-21', '2012-12-21'
 
-        return self.raw("""
+        c = connection.cursor()
+        c.execute("""
             SELECT 1 "id"
                 , CAST(%s AS VARCHAR(6)) "season"
                 , CAST(avg(temp_dry) AS INT) "temp_dry"
                 , CAST(avg(temp_dry_high) AS INT) "temp_dry_high"
                 , CAST(avg(temp_dry_low) AS INT) "temp_dry_low"
                 , CAST(avg(humidity) AS INT) "humidity"
-                , sum(precipitation) "precipitation"
-                , sum(CASE WHEN precipitation is not null THEN 1 ELSE 0 END) "precipitation_days"
-                , sum(CASE WHEN weather like '%%SN%%' THEN 1 ELSE 0 END) "snow_days"
+                , CAST(sum(precipitation) AS INT) "precipitation"
+                , CAST(sum(CASE WHEN precipitation is not null THEN 1 ELSE 0 END) AS INT) "precipitation_days"
+                , CAST(sum(CASE WHEN weather like '%%SN%%' THEN 1 ELSE 0 END) AS INT) "snow_days"
                 , CAST(avg(wind_speed) AS INT) "wind_speed"
                 , CAST(avg(wind_direction) AS INT) "wind_direction" -- totally wrong
             FROM (
@@ -104,4 +107,7 @@ class WeatherCSVManager(models.Manager):
             ) agg
             WHERE report_date BETWEEN %s AND %s
         """, [season, wban_id, start, end])
+
+        desc = c.description
+        return dict(zip([col[0] for col in desc], c.fetchone()))
 
