@@ -1,0 +1,51 @@
+<div class="station-weather">
+    <div class="tabs-parent seasons box">
+        <ul class="tabs-header unstyled">
+            {% for season in seasons %}
+                <li class="tab {% if loop.first %}active{% endif %}">{{ season.season }}</li>
+            {% endfor %}
+        </ul>
+        {% for season in seasons %}
+            <div class="tab-content tab-{{ season.season }} {% if not loop.first %}hide{% endif %}">
+                <table class="seasons-data">
+                    <tbody>
+                    <tr>
+                        <td class="label">Avg Temp</td><td class="value">{{ season.temp_dry }}F</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Avg High</td><td class="value">{{ season.temp_dry_high }}F</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Avg Low</td><td class="value">{{ season.temp_dry_low }}F</td>
+                    </tr>
+                    {% if season.humidity %}
+                        <tr>
+                            <td class="label">Avg Humidity</td><td class="value">{{ season.humidity }}%</td>
+                        </tr>
+                    {% endif %}
+                    {% if season.precipitation %}
+                        <tr>
+                            <td class="label">Total Rainfall</td><td class="value">{{ season.precipitation }}in</td>
+                        </tr>
+                        <td class="label">Days of Rain</td><td class="value">{{ season.precipitation_days }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Days of Snow</td><td class="value">{{ season.snow_days }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if season.wind_speed %}
+                        <tr>
+                            <td class="label">Avg Wind Speed</td><td class="value">{{ season.wind_speed }}mph</td>
+                        </tr>
+                    {% endif %}
+                    {% if season.wind_direction %}
+                        <tr>
+                            <td class="label">Prevailing Wind</td><td class="value">{{ season.wind_direction }}deg</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    </div>
+</div>

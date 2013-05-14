@@ -86,6 +86,30 @@
         }
     </script>
 
+
+    <script>
+        // quick-and-dirty tab behavior handler for seasonal tabbed interface.
+        $('.tabs-parent').on('click', '.tab', function(event){
+            var $this = $(this),
+                $tabs = $this.parent().siblings('.tab-content'),
+                $selectedTab = $this.closest('.tabs-parent').find('.tab-' + $this.text());
+
+            x = $this;
+
+            if ($this.hasClass('active')) {
+                return;
+            }
+
+            // toggle tab class
+            $this.addClass('active');
+            $this.siblings().removeClass('active');
+
+            // toggle content visibility
+            $tabs.slideUp();
+            $selectedTab.slideDown();
+        });
+    </script>
+
     {% block scripts %}
     {% endblock scripts %}
 </body>
