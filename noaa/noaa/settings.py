@@ -91,16 +91,23 @@ TEMPLATE_LOADERS = (
     'coffin.template.loaders.Loader',
     )
 
+#https://github.com/GaretJax/coffin
 JINJA2_TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
     'django.template.loaders.filesystem.Loader',
     )
 
+JINJA2_DISABLED_TEMPLATES = (
+    r'debug_toolbar/.',
+)
+
+INTERNAL_IPS = ('127.0.0.1',)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     #'django.contrib.auth.middleware.AuthenticationMiddleware',
     #'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
@@ -121,6 +128,7 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     'south',
+    'debug_toolbar',
     #'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
