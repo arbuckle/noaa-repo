@@ -4,16 +4,27 @@ import subprocess
 from datetime import datetime, timedelta
 
 def get_urls():
-	filedate = datetime(2007, 7, 1)
-	enddate = datetime(2013, 5, 1)
+    yyyy = 2011
+    mm = 1
+    filedate = str(yyyy) + str(mm).zfill(2)
 
-	urls = []
-	while filedate <= enddate:
-		urls.append('QCLCD%s%s.zip' % (filedate.strftime('%Y'), filedate.strftime('%m')))
-		filedate += timedelta(365.25/12)
-	return list(set(urls))
+    urls = []
+    while filedate <> '201305':
+        urls.append('QCLCD%s.zip' % filedate)
+
+        if mm == 12:
+            mm = 1
+            yyyy += 1
+        else:
+            mm += 1
+        filedate = str(yyyy) + str(mm).zfill(2)
+
+
+    return list(set(urls))
 
 for url in get_urls():
-	filepath = 'http://cdo.ncdc.noaa.gov/qclcd_ascii/'
-	#urllib.urlretrieve(filepath + url, filename=url)
-	subprocess.call(['wget', filepath + url])
+    print url
+
+for url in get_urls():
+    filepath = 'http://cdo.ncdc.noaa.gov/qclcd_ascii/'
+    subprocess.call(['wget', filepath + url])

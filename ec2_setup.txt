@@ -1,6 +1,11 @@
 # run ec2_setup.sh
 
 
+# install all necessary packages.
+pip install pip --upgrade && sudo pip install virtualenv && virtualenv --no-site-packages noaa_env && cd noaa_env && source bin/activate && pip install django gunicorn south django-debug-toolbar psycopg2 pytz django_orm jinja2 coffin
+
+
+
 # configure postgres
 sudo nano /etc/postgresql/9.2/main/postgresql.conf
     Uncomment:

@@ -7,6 +7,22 @@ import re
 
 from datetime import datetime
 from zipfile import ZipFile
+import time
+
+time.clock()
+
+
+#self.base_dir = r'C:/Users/adorkable/Downloads/{filename}'
+#self.data_dir = 'c:/users/adorkable/documents/python/noaa-repo/data/'
+#self.base_dir = r'/mnt/noaa_data/{filename}'
+#self.data_dir = r'/mnt/noaa_data/'
+
+settings = {
+    'zip_path': r'/mnt/noaa_data/{filename}',
+    'data_dir': r'/mnt/noaa_data/',
+    'start_yyyy': 2012,
+    'start_mm': 0
+}
 
 
 class NOAACSVParser(object):
@@ -90,6 +106,7 @@ class NOAACSVParser(object):
         weather.next() # throw away the headers
 
         output = []
+        c = 0
         for line in weather:
             if not line:
                 continue
@@ -109,6 +126,9 @@ class NOAACSVParser(object):
                 )
             output.append(data)
 
+            if c > 10000:
+                pass#break
+            c += 1
         csvfile.close()
         return output
 
@@ -120,6 +140,9 @@ class WeatherData(object):
 
         self.weather = {}
         self.wban = {}
+
+    def create_report_output_file(self, filename):
+        self.file = open(filename, 'w')
 
     def get_wban(self, wban):
         if wban in self.wban.keys():
@@ -179,43 +202,72 @@ class WeatherData(object):
         for weather in weather_type:
             self.c.execute('INSERT INTO weather_report_weather (weather_id, report_id) VALUES (%d, %d)' % (weather, id))
 
+    def _strip_nulls(self, col):
+        if not col:
+            col = '\\N'
+        return col
+
+    def generate_report_copy(self, report):
+        wban = self.get_wban(report[0])
+        weather_type = self.get_weather_type(report[2])
+        if not weather_type:
+            weather_type = ''
+        report = [self._strip_nulls(x) for x in report]
+        output = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (wban, report[1], report[3], report[4], report[5], report[6]
+                                                                , report[7], report[8], report[9], report[10], report[11])
+        self.file.write(output)
+
+    def copy_to_db(self, filename):
+        self.file.close()
+        file = open(filename, 'r')
+        sql = """
+                COPY weather_report
+                    (wban_id, date, visibility, temp_dry, temp_wet
+                    , dew_point, humidity, wind_speed, wind_direction
+                    , pressure, precipitation)
+                FROM %s
+                WITH (delimiter ',')
+              """.format()
+        self.c.copy_from(file, 'weather_report', sep=',', null='\\N', size=8192, columns=('wban_id', 'date', 'visibility', 'temp_dry', 'temp_wet', 'dew_point', 'humidity', 'wind_speed', 'wind_direction', 'pressure', 'precipitation'))
+        file.close()
+
     def write_station(self, station):
-        id = self.get_wban(station[0])
-        update = """
-            UPDATE weather_wban
-            SET
-                callsign = %s
-                , name = %s
-                , state = %s
-                , location = %s
-                , latitude = %s
-                , longitude = %s
-                , altitude = %s
-                , tz = %s
-            WHERE id = %s
-        """.format()
-        station = list(station)
-        station.append(id)
-        self.c.execute(update, station[1:])
+            id = self.get_wban(station[0])
+            update = """
+                UPDATE weather_wban
+                SET
+                    callsign = %s
+                    , name = %s
+                    , state = %s
+                    , location = %s
+                    , latitude = %s
+                    , longitude = %s
+                    , altitude = %s
+                    , tz = %s
+                WHERE id = %s
+            """.format()
+            station = list(station)
+            station.append(id)
+            self.c.execute(update, station[1:])
 
 class FileGrabber(object):
-    # TODO:  Make this a generator.
     def __init__(self):
-#        self.base_dir = r'C:/Users/adorkable/Downloads/{filename}'
-#        self.data_dir = 'c:/users/adorkable/documents/python/noaa-repo/data/'
-        self.base_dir = r'/home/ubuntu/noaa_data/{filename}'
-        self.data_dir = r'/home/ubuntu/noaa_data/{filename}'
+        self.base_dir = settings['zip_path']
+        self.data_dir = settings['data_dir']
 
         self.archive_file = r'QCLCD{yyyy}{mm}.zip'
 
-        self.yyyy = 2011
-        self.mm = 0
+        self.yyyy = settings['start_yyyy']
+        self.mm = settings['start_mm']
 
     def _get_yyyy(self):
         return str(self.yyyy)
 
     def _get_mm(self):
         return str(self.mm).zfill(2)
+
+    def get_current_yyyy_mm(self):
+        return '%s%s' % (self._get_yyyy(), self._get_mm())
 
     def _unpack(self):
         zip_filename = self.archive_file.format(yyyy=self._get_yyyy(), mm=self._get_mm())
@@ -242,6 +294,7 @@ class FileGrabber(object):
             self.mm += 1
 
 def main():
+    time.clock()
     file_manager = FileGrabber()
     csv_parser = NOAACSVParser()
     db = WeatherData()
@@ -249,18 +302,32 @@ def main():
     go = True
     file_reports, file_stations = file_manager.get_next_filenames()
     print file_reports, file_stations
-    c = 0
+
+    c=0
     while go:
+        data_filename = '%s%s.txt' % (settings['data_dir'], file_manager.get_current_yyyy_mm())
+
         for station in csv_parser.get_stations_from_file(file_stations):
             db.write_station(station)
 
+        db.create_report_output_file(data_filename)
         for report in csv_parser.get_hourly_from_file(file_reports):
             if report[4]:
-                db.write_report(report)
+                #db.write_report(report)
+                db.generate_report_copy(report)
             if c % 10000 == 0:
                 print report
             c += 1
+
+        print 'writing to database'
+        a = time.clock()
+        db.copy_to_db(data_filename)
+        b = time.clock()
+        print 'wrote in %s ms' % str(b-a)
         db.conn.commit()
+        c = time.clock()
+        print 'finished in in %s ms' % str(c-a)
+
 
         try:
             file_reports, file_stations = file_manager.get_next_filenames()
