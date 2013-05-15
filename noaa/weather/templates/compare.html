@@ -24,9 +24,37 @@
         {% include 'includes/chart.html' %}
         {% include 'includes/advertisement.html' %}
 
-        {% for station in stations %}
-            {% include 'includes/station-data.html' %}
+        <h3>Station Comparison:</h3>
+        <ul class="unstyled station-comparison">
+        {% for metric, is_greater in comparison.items() %}
+            <li>
+            {% if metric == 'temp_dry' %}
+                {{ stations[0].name }} is {% if is_greater %}hotter{% else %}colder{% endif %} than {{ stations[1].name }}.
+            {% elif metric == 'precipitation_days' %}
+                {{ stations[0].name }} has {% if is_greater %}more{% else %}fewer{% endif %} rainy days than {{ stations[1].name }}.
+            {% elif metric == 'precipitation' %}
+                {{ stations[0].name }} has {% if is_greater %}more{% else %}less{% endif %} total rainfall than {{ stations[1].name }}.
+            {% elif metric == 'snow_days' %}
+                {{ stations[0].name }} has {% if is_greater %}more{% else %}fewer{% endif %} snow days than {{ stations[1].name }}.
+            {% elif metric == 'humidity' %}
+                {{ stations[0].name }} is {% if is_greater %}more{% else %}less{% endif %} humid than {{ stations[1].name }}.
+            {% elif metric == 'wind_speed' %}
+                {{ stations[0].name }} is {% if is_greater %}windier{% else %}less windy{% endif %} than {{ stations[1].name }}.
+            {% endif %}
+            </li>
         {% endfor %}
+        </ul>
+
+        <h3>Individual Station Data:</h3>
+        {% for station in stations %}
+            <div class="comparison-wrap column six">
+                {% include 'includes/station-data.html' %}
+                {% with station.seasons as seasons %}
+                    {% include 'includes/station-seasons.html' %}
+                {% endwith %}
+            </div>
+        {% endfor %}
+        <div class="clear"></div>
     </div>
 {% endblock content %}
 

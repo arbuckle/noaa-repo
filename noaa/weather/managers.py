@@ -111,3 +111,20 @@ class WeatherCSVManager(models.Manager):
         desc = c.description
         return dict(zip([col[0] for col in desc], c.fetchone()))
 
+    def all_seasons(self, wban_id):
+        output = []
+        seasons = (
+            self.seasonal(wban_id, 'winter'),
+            self.seasonal(wban_id, 'spring'),
+            self.seasonal(wban_id, 'summer'),
+            self.seasonal(wban_id, 'fall')
+        )
+
+        # This is the only validation performed.
+        # If a season is missing temp_dry, it's taken as an indication that no data was collected
+        # for this station on the season dates.
+        for season in seasons:
+            if season['temp_dry']:
+                output.append(season)
+
+        return output
