@@ -31,15 +31,15 @@
             {% if metric == 'temp_dry' %}
                 {{ stations[0].name }} is {% if is_greater %}hotter{% else %}colder{% endif %} than {{ stations[1].name }}.
             {% elif metric == 'precipitation_days' %}
-                {{ stations[0].name }} has {% if is_greater %}more{% else %}fewer{% endif %} rainy days than {{ stations[1].name }}.
+                {{ stations[1].name }} has {% if not is_greater %}more{% else %}fewer{% endif %} rainy days than {{ stations[0].name }}.
             {% elif metric == 'precipitation' %}
                 {{ stations[0].name }} has {% if is_greater %}more{% else %}less{% endif %} total rainfall than {{ stations[1].name }}.
             {% elif metric == 'snow_days' %}
                 {{ stations[0].name }} has {% if is_greater %}more{% else %}fewer{% endif %} snow days than {{ stations[1].name }}.
             {% elif metric == 'humidity' %}
-                {{ stations[0].name }} is {% if is_greater %}more{% else %}less{% endif %} humid than {{ stations[1].name }}.
+                {{ stations[1].name }} is {% if not is_greater %}more{% else %}less{% endif %} humid than {{ stations[0].name }}.
             {% elif metric == 'wind_speed' %}
-                {{ stations[0].name }} is {% if is_greater %}windier{% else %}less windy{% endif %} than {{ stations[1].name }}.
+                {{ stations[1].name }} is {% if not is_greater %}windier{% else %}less windy{% endif %} than {{ stations[0].name }}.
             {% endif %}
             </li>
         {% endfor %}
