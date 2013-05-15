@@ -74,7 +74,6 @@
                 window.location.href = "{{ "weather-compare"|url(station.id, alt_station.id) }}"
             });
         {% endfor %}
-        //TODO:  Test This!!
             marker = new google.maps.Marker({
                 position: new google.maps.LatLng({{ station.latitude }}, {{ station.longitude }}),
                 map: map,

@@ -168,3 +168,7 @@ h1 {
 }
 
 .mini {font-size: 0.7em; font-weight: normal; font-style: italic;}
+
+
+/* TODO:  media queries.  height-wise for footer.  width-wise for sidebar/columnar layout. */
+/* TODO:  custom 404 and 500 error pages */

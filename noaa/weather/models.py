@@ -54,6 +54,3 @@ class Report(models.Model):
     precipitation = models.DecimalField(null=True, max_digits=5, decimal_places=2) # Hourly precip in inches
 
     aggregates = WeatherCSVManager()
-
-# TODO:  create sets from data for each of these data points in order to determine the structure of the data and ensure that the model accounts for all possible variations.
-
