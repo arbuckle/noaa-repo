@@ -32,9 +32,9 @@ class Weather(TemplateView):
 
         #this would be a good place to use django's messaging framework...
         seasons = Report.aggregates.all_seasons(wban_id)
-        errors = None
+        errors = ()
         if len(seasons) < 4:
-            errors = ('Data collected from this weather station is missing for a large part of the year. Comparisons may be inaccurate.')
+            errors = ('Data collected from this weather station is missing for a large part of the year. Comparisons may be inaccurate.',)
 
         context.update({
             "station": wban,
@@ -92,12 +92,12 @@ class WeatherCompare(TemplateView):
         annual_2 = self._annual_from_seasonal(wban_2.seasons)
 
         # http://127.0.0.1:8000/station/compare/810/to/820/
-        # http://127.0.0.1:8000/station/compare/1579/to/698/
-        errors = None
+        # http://127.0.0.1:8000/station/compare/1579/to/810/
+        errors = ()
         if len(wban_1.seasons) < 4 and len(wban_2.seasons) < 4:
-            errors = ('Data collected from these weather stations is missing for a large part of the year. Comparisons may be inaccurate.')
+            errors = ('Data collected from these weather stations is missing for a large part of the year. Comparisons may be inaccurate.',)
         elif len(wban_1.seasons) < 4 or len(wban_2.seasons) < 4:
-            errors = ('Data collected from one weather station is missing for a large part of the year. Comparisons may be inaccurate.')
+            errors = ('Data collected from one weather station is missing for a large part of the year. Comparisons may be inaccurate.',)
 
 
         comparison_keys = annual_1.keys()

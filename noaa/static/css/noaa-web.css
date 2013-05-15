@@ -169,6 +169,26 @@ h1 {
 
 .mini {font-size: 0.7em; font-weight: normal; font-style: italic;}
 
+.error {
+    color: rgb(255, 183, 126);
+    display: block;
+    margin: 10px 0;
+}
 
-/* TODO:  media queries.  height-wise for footer.  width-wise for sidebar/columnar layout. */
+@media (max-height: 600px) {
+    .footer {position: relative;}
+    #sidebar {position: absolute;}
+}
+
+@media (max-width: 700px) {
+    .column {float:none; width: 100% !important;}
+    #sidebar {position: relative; width: 100%; height: auto;}
+    #content {margin: 20px 0;}
+
+    .graph {width: 100% !important; float: none;}
+    .legend {width: 100%; float: none; height: auto; padding: 2.5%; margin: 0;}
+    .legend ul {float: left; width: 50%;}
+
+}
+
 /* TODO:  custom 404 and 500 error pages */

@@ -9,6 +9,9 @@
 {% endblock style %}
 
 {% block instructions %}
+    {% for error in errors %}
+        <strong class="error">{{ error }}</strong>
+    {% endfor %}
     You're looking at historical weather data comparing
     {% for station in stations %}
         <a href="{{ "weather"|url(station.id) }}">{{ station.location }}</a> in {{ station.name }}{% if station.state %}, {{ station.state }}{% endif %}

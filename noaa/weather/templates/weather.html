@@ -7,6 +7,9 @@
 {% endblock style %}
 
 {% block instructions %}
+    {% for error in errors %}
+        <strong class="error">{{ error }}</strong>
+    {% endfor %}
     You're looking at historical weather data from {{ station.location }}
     in {{ station.name }}{% if station.state %}, {{ station.state }}{% endif %}.
 {% endblock instructions %}
