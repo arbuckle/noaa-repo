@@ -68,6 +68,7 @@
         var blockRedraw = false;
         var initialized = false;
 
+        // Event handler for graph legend.
         function drawLegend (e, date, pts, row) {
             var i,
                 c_raw = graph.rawData_.length;
@@ -96,17 +97,12 @@
 
             document.getElementById('WeatherLegend').innerHTML = legendTemplate(template_data);
         }
-    </script>
 
-
-    <script>
         // quick-and-dirty tab behavior handler for seasonal tabbed interface.
         $('.tabs-parent').on('click', '.tab', function(event){
             var $this = $(this),
                 $tabs = $this.parent().siblings('.tab-content'),
                 $selectedTab = $this.closest('.tabs-parent').find('.tab-' + $this.text());
-
-            x = $this;
 
             if ($this.hasClass('active')) {
                 return;
