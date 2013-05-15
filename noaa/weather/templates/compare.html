@@ -64,12 +64,12 @@
                 document.getElementById("Weather"),
                 "{{ 'weather-compare-csv'|url(stations[0].id, stations[1].id) }}",
                 {
-                    rollPeriod: 1,
+                    rollPeriod: 7,
                     showRoller: true,
                     customBars: true,
                     labelsDiv: document.getElementById('DummyLegend'),
                     labels: ["date", {% for station in stations %}"{{ station.name }}"{% if not loop.last %},{% endif %}{% endfor %}],
-                    //colors: []
+                    colors: ['#00CC00', '#FF3300'],
                     showRangeSelector: true,
                     highlightCallback: drawLegend
                 }

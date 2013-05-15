@@ -46,14 +46,13 @@
                 legend: 'always',
                 labelsDiv: document.getElementById('DummyLegend'),
                 labels: ["date", "{{ station.name }}"],
-                //colors: []
+                colors: ['#00CC00'],
                 showRangeSelector: true,
                 highlightCallback: drawLegend
             }
         )
     </script>
 
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFbpJc0RjsSyQ9Mucdio3PvK-4w-SK8j0&sensor=false"></script>
     <script>
         function initialize() {
             var mapOptions = {

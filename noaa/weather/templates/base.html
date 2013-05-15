@@ -39,7 +39,7 @@
             </p>
             {% for station in stations %}
                 <ul class="unstyled">
-                    <li><strong>{{ station.name }}</strong></li>
+                    <li><strong class="station-{{ forloop.counter }}">{{ station.name }}</strong></li>
                     <li>High: {{ station.high }}F</li>
                     <li>Low: {{ station.low }}F</li>
                     <li>Avg: {{ station.avg }}F</li>
@@ -51,6 +51,8 @@
     <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
     <script src="{{ STATIC_URL }}js/mango.js"></script>
     <script src="{{ STATIC_URL }}js/dygraphs-combined.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFbpJc0RjsSyQ9Mucdio3PvK-4w-SK8j0&sensor=false"></script>
+
     <script>
         var legendTemplate = mango.compile(document.getElementById('TemplateLegend').innerHTML);
         var blockRedraw = false;

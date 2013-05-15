@@ -100,6 +100,10 @@ h1 {
     padding: 20px 20px 80px;
     background-color: rgb(184, 186, 199);
 }
+
+.weather-wrap {
+    background-color: rgba(255, 255, 255, 0.7);
+}
 .graph {
     width: 80% !important;
     float:left;
@@ -147,6 +151,13 @@ h1 {
     padding: 0 10px;
     line-height: 1.5;
     font-weight: bold;
+}
+
+.station-1 {
+    color: #00CC00;
+}
+.station-2{
+    color: #FF3300;
 }
 
 .station-comparison {
