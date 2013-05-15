@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, url
-from weather.views import Weather, WeatherCSV, Stations, WeatherCompare, WeatherCompareCSV
+from weather.views import About, Weather, WeatherCSV, Stations, WeatherCompare, WeatherCompareCSV
 
 urlpatterns = patterns('',
     url(r'^$', Stations.as_view(), name='station'),
+    url(r'^about/$', About.as_view(), name='about'),
 
     # highly impure resource-oriented architecture.
     # Ideally, HTML would be served from one domain, JSON from another, and all URLs would be identical between the two.

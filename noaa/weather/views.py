@@ -1,7 +1,9 @@
 from django.views.generic.base import TemplateView
 from weather.models import Report
 from weather.models import WBAN
-import time
+
+class About(TemplateView):
+    template_name = 'about.html'
 
 class Stations(TemplateView):
     template_name = 'stations.html'
@@ -21,6 +23,7 @@ class Weather(TemplateView):
         context = kwargs
         wban_id = kwargs.get('id', None)
 
+        # TODO:  pass data to template when station is missing seasonal data.  do not allow the user to compare this station.
 
         context.update({
             "station": WBAN.objects.get(id=wban_id),
@@ -41,16 +44,16 @@ class WeatherCompare(TemplateView):
 
         for col in averages:
             for season in seasons:
-                if output[col]:
+                if output[col] and season[col]:
                     output[col] = (output[col] + season[col]) / 2
-                else:
+                elif season[col]:
                     output[col] = season[col]
 
         for col in sums:
             for season in seasons:
-                if output[col]:
+                if output[col] and season[col]:
                     output[col] += season[col]
-                else:
+                elif season[col]:
                     output[col] = season[col]
 
 
