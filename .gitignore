@@ -43,3 +43,4 @@ initial_data.json
 *.sqlite
 
 data
+private
