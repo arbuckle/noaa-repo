@@ -2,6 +2,7 @@
 
 
 import csv
+from os import environ
 import psycopg2
 import re
 
@@ -21,7 +22,9 @@ settings = {
     'zip_path': r'/mnt/noaa_data/{filename}',
     'data_dir': r'/mnt/noaa_data/',
     'start_yyyy': 2012,
-    'start_mm': 0
+    'start_mm': 0,
+    'db_user': environ.get('NOAA_DB_USER', None),
+    'db_password': environ.get('NOAA_DB_PASSWORD', None)
 }
 
 
@@ -135,7 +138,7 @@ class NOAACSVParser(object):
 
 class WeatherData(object):
     def __init__(self):
-        self.conn = psycopg2.connect(database="noaa", user="noaa_user", password="mfc104~0b")
+        self.conn = psycopg2.connect(database="noaa", user=settings['db_user'], password=settings['db_password'])
         self.c = self.conn.cursor()
 
         self.weather = {}
