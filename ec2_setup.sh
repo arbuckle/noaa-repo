@@ -13,6 +13,3 @@ apt-get update
 apt-get install pgdg-keyring
 apt-get install python-pip nginx git postgresql libpq-dev python-dev -y
 
-# move postgres data volume to ephermal storage
- service postgresql stop
- mkdir /mnt/postgresql &&  mkdir /mnt/postgresql/9.2 &&  mv /var/lib/postgresql/9.2/main /mnt/postgresql/9.2/main &&  chmod 0700 /mnt/postgresql/9.2/main
