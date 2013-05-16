@@ -51,7 +51,8 @@
                 labels: ["date", "{{ station.name }}"],
                 colors: ['#00CC00'],
                 showRangeSelector: true,
-                highlightCallback: drawLegend
+                highlightCallback: drawLegend,
+                dateWindow: [new Date('2012-01-01'), new Date('2013-01-01')]
             }
         )
     </script>

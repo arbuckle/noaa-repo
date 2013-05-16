@@ -74,7 +74,8 @@
                     labels: ["date", {% for station in stations %}"{{ station.name }}"{% if not loop.last %},{% endif %}{% endfor %}],
                     colors: ['#00CC00', '#FF3300'],
                     showRangeSelector: true,
-                    highlightCallback: drawLegend
+                    highlightCallback: drawLegend,
+                    dateWindow: [new Date('2012-01-01'), new Date('2013-01-01')]
                 }
         )
     </script>
