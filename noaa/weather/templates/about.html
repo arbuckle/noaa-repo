@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    About WeatherPal
+    About {{ PRODUCT_NAME }}
 {% endblock title %}
 
 {% block style %}
@@ -14,7 +14,7 @@
     <div class="content-wrap">
 
         <div class="column eight">
-            <h3>About WeatherPal</h3>
+            <h3>About {{ PRODUCT_NAME }}</h3>
             <p>
                 While planning a move from Florida to Boulder, CO, I ran into a snag - people said the weather in
                 Colorado was "schizophrenic", "weird", or "unpredictable", but outside of these vague generalizations
@@ -25,13 +25,13 @@
             </p>
             <p>
                 I found NOAA's QCLCD dataset, got to work, and quickly found myself looking at a simple line graph of
-                a years' worth of hourly temperature readings from Denver International Airport. And that's how WeatherPal
+                a years' worth of hourly temperature readings from Denver International Airport. And that's how {{ PRODUCT_NAME }}
                 got its start.
             </p>
             <p>
-                WeatherPal is still a work in progress.<br> International weather stations, sadly, aren't yet included.
+                {{ PRODUCT_NAME }} is still a work in progress.<br> International weather stations, sadly, aren't yet included.
                 The station comparison could use a bit more of a human touch. The prevailing wind calculation is totally
-                wrong.  But WeatherPal is probably good enough to be a useful resource for some folks, so it's online.
+                wrong.  But {{ PRODUCT_NAME }} is probably good enough to be a useful resource for some folks, so it's online.
                 I hope you find it useful.
             </p>
             <p>

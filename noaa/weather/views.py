@@ -3,11 +3,26 @@ from django.http.response import Http404
 from django.views.generic.base import TemplateView
 from weather.models import Report
 from weather.models import WBAN
+from noaa import settings
 
-class About(TemplateView):
+class BaseNOAAView(TemplateView):
+    """
+    BaseNOAAView is a default CBV used to ensure that certain context globals are available in all template.
+    Ordinarily, this sort of behavior would be managed by a template context processor, but Jinja2 doesn't support
+    those out of the box and the simplicity of this application makes this solution more attractive.
+    """
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        context.update({
+            "PRODUCT_NAME": settings.PRODUCT_NAME
+        })
+        return self.render_to_response(context)
+
+class About(BaseNOAAView):
     template_name = 'about.html'
 
-class Stations(TemplateView):
+
+class Stations(BaseNOAAView):
     template_name = 'stations.html'
 
     def get_context_data(self, **kwargs):
@@ -18,7 +33,7 @@ class Stations(TemplateView):
         return context
 
 
-class Weather(TemplateView):
+class Weather(BaseNOAAView):
     template_name = 'weather.html'
 
     def get_context_data(self, **kwargs):
@@ -44,7 +59,7 @@ class Weather(TemplateView):
         })
         return context
 
-class WeatherCompare(TemplateView):
+class WeatherCompare(BaseNOAAView):
     template_name = 'compare.html'
 
     def _annual_from_seasonal(self, seasons):
@@ -111,7 +126,7 @@ class WeatherCompare(TemplateView):
         })
         return context
 
-class WeatherCompareCSV(TemplateView):
+class WeatherCompareCSV(BaseNOAAView):
     template_name = 'csv/comparison.csv'
     content_type = 'text'
 
@@ -127,7 +142,7 @@ class WeatherCompareCSV(TemplateView):
         return context
 
 
-class WeatherCSV(TemplateView):
+class WeatherCSV(BaseNOAAView):
     template_name = 'csv/station.csv'
     content_type = 'text'
 

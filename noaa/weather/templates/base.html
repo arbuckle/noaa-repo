@@ -9,14 +9,14 @@
 </head>
 <body>
     <section id="sidebar">
-        <a href="{{ 'station'|url() }}" class="logo">WeatherPal</a>
+        <a href="{{ 'station'|url() }}" class="logo">{{ PRODUCT_NAME }}</a>
         <div class="about">
             <p>
                 Have you ever been planning a vacation to some exotic destination, and, far in advance of your leaving,
                 found yourself wondering <em>"what the heck do I wear in New Jersey in September?"</em>
             </p>
             <p>
-                Wonder no longer.  Weather Pal makes it easy to compare weather from any two locations in the US.
+                Wonder no longer.  {{ PRODUCT_NAME }} makes it easy to compare weather from any two locations in the US.
             </p>
             <p class="instructions">
                 {% block instructions %}
@@ -26,8 +26,8 @@
         </div>
 
         <ul class="footer unstyled">
-            <li><a href="{{ "about"|url() }}">About WeatherPal</a></li>
-            <li> All of WeatherPal's data is derived from the NOAA's QCLCD records
+            <li><a href="{{ "about"|url() }}">About {{ PRODUCT_NAME }}</a></li>
+            <li> All of {{ PRODUCT_NAME }}'s data is derived from the NOAA's QCLCD records
                 and can be <a href="http://cdo.ncdc.noaa.gov/qclcd/QCLCD">accessed freely here</a>.
             </li>
             <li class="mini">

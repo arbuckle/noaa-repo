@@ -9,6 +9,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+PRODUCT_NAME = 'Good Weather, Man'
 
 DB_USER = environ.get('NOAA_DB_USER', None)
 DB_PASSWORD = environ.get('NOAA_DB_PASSWORD', None)
