@@ -12,6 +12,8 @@ MANAGERS = ADMINS
 
 DB_USER = environ.get('NOAA_DB_USER', None)
 DB_PASSWORD = environ.get('NOAA_DB_PASSWORD', None)
+SECRET_KEY = environ.get('NOAA_SECRET_KEY', None)
+
 
 DATABASES = {
     'default': {
@@ -88,7 +90,6 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'f9wg05migii@g*xrb+is#@_pjg@4c+lxupa9(ca1xlds2h2zcr'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
