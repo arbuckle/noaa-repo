@@ -14,7 +14,6 @@ DB_USER = environ.get('NOAA_DB_USER', None)
 DB_PASSWORD = environ.get('NOAA_DB_PASSWORD', None)
 SECRET_KEY = environ.get('NOAA_SECRET_KEY', None)
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -71,14 +70,14 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = '//catto5k.com/static/noaa/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    'c:/users/adorkable/documents/python/noaa-repo/noaa/static',
+    '/home/ubuntu/noaa_env/noaa-repo/noaa/static',
 )
 
 # List of finder classes that know how to find static files in
@@ -88,8 +87,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
-# Make this unique, and don't share it with anybody.
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -125,10 +122,7 @@ ROOT_URLCONF = 'noaa.urls'
 WSGI_APPLICATION = 'noaa.wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    "c:/users/adorkable/documents/python/noaa-repo/noaa/weather/templates"
+    "/home/ubuntu/noaa_env/noaa-repo/noaa/weather/templates",
 )
 
 INSTALLED_APPS = (
@@ -175,3 +169,7 @@ LOGGING = {
         },
     }
 }
+
+
+if environ.get('DEVELOPMENT', None):
+    from settings_dev import *
