@@ -53,6 +53,7 @@ class Report(models.Model):
     pressure = models.DecimalField(null=True, max_digits=4, decimal_places=2) # Pressure in ?unknown unit?
     precipitation = models.DecimalField(null=True, max_digits=5, decimal_places=2) # Hourly precip in inches
 
+    objects = models.Manager()
     aggregates = WeatherCSVManager()
 
 
@@ -73,13 +74,13 @@ class Report_Seasonal(models.Model):
     """
     wban = models.ForeignKey(WBAN)
     season = models.CharField(max_length=6)
-    temp_dry = models.IntegerField()
-    temp_dry_high = models.IntegerField()
-    temp_dry_low = models.IntegerField()
-    humidity = models.IntegerField()
-    precipitation = models.IntegerField()
-    precipitation_days = models.IntegerField()
-    snow_days = models.IntegerField()
-    wind_speed = models.IntegerField()
-    wind_direction = models.IntegerField()
+    temp_dry = models.IntegerField(null=True)
+    temp_dry_high = models.IntegerField(null=True)
+    temp_dry_low = models.IntegerField(null=True)
+    humidity = models.IntegerField(null=True)
+    precipitation = models.IntegerField(null=True)
+    precipitation_days = models.IntegerField(null=True)
+    snow_days = models.IntegerField(null=True)
+    wind_speed = models.IntegerField(null=True)
+    wind_direction = models.IntegerField(null=True)
 
