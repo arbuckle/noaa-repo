@@ -141,6 +141,33 @@ class WeatherCSVManager(models.Manager):
         return dict(zip([col[0] for col in desc], c.fetchone()))
 
     def all_seasons(self, wban_id):
+        """
+        Returns a list of seasonal weather data for a given weather station using the report_seasonal aggregation table.
+        """
+        seasons_identities = ('winter', 'spring', 'summer', 'fall')
+        c = connection.cursor()
+        c.execute("""
+            SELECT * FROM weather_report_seasonal WHERE wban_id = %s AND temp_dry IS NOT NULL
+        """, [wban_id])
+        desc = c.description
+        seasons = [
+            dict(zip([col[0] for col in desc], row))
+            for row in c.fetchall()
+        ]
+
+        i = 0
+        output = [None] * 4
+        for season in seasons_identities:
+            for row in seasons:
+                if row and row['season'] == season:
+                    output[i] = row
+            i += 1
+
+        output = filter(None, output)
+        print output
+        return output
+
+    def all_seasons_DEPRECATED(self, wban_id):
         output = []
         seasons = (
             self.seasonal(wban_id, 'winter'),
