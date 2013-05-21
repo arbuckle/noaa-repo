@@ -53,7 +53,7 @@ class Weather(BaseNOAAView):
 
         context.update({
             "station": wban,
-            "stations": WBAN.objects.filter(disabled=False).exclude(id=wban_id).order_by('state', 'name', 'location'),
+            "stations": WBAN.objects.filter(disabled=False).order_by('state', 'name', 'location'),
             "seasons": seasons,
             "errors": errors
         })

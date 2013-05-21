@@ -171,6 +171,13 @@ LOGGING = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'noaa-cache'
+    }
+}
+
 
 if environ.get('DEVELOPMENT', None):
     from settings_dev import *

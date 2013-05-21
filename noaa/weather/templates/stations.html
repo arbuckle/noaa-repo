@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load cache %}
+
 
 {% block title %}
     NOAA Weather Station Data
@@ -16,9 +18,11 @@
     <div class="content-wrap">
         <div id="map-canvas" class="map-stations"></div>
         <ul>
-            {% for station in stations %}
-            <li><a href="{{ "weather"|url(station.id) }}">{{ station.state }} - {{ station.callsign }} - {{ station.name }} - {{ station.location }}</a></li>
-            {% endfor %}
+            {% cache 60*60*24 'stations-html' %}
+                {% for station in stations %}
+                <li><a href="{{ "weather"|url(station.id) }}">{{ station.state }} - {{ station.callsign }} - {{ station.name }} - {{ station.location }}</a></li>
+                {% endfor %}
+            {% endcache %}
         </ul>
     </div>
 
@@ -26,28 +30,38 @@
 
 {% block scripts %}
     <script>
-        function initialize() {
-            var mapOptions = {
-                center: new google.maps.LatLng(49.001844,-111.2146),
-                zoom: 3,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            var map = new google.maps.Map(document.getElementById("map-canvas"),
-                    mapOptions);
+        {% include 'includes/stations.js' %}
 
-            var marker;
-            {% for station in stations %}
-            marker = new google.maps.Marker({
-                position: new google.maps.LatLng({{ station.latitude }}, {{ station.longitude }}),
-                map: map,
-                title: '{{ station.id }} - {{ station.name|escapejs }}-{{ station.location|escapejs }}'
-            });
-               google.maps.event.addListener(marker, 'click', function(){
-                   window.location.href = "{{ "weather"|url(station.id) }}"
-               });
-            {% endfor %}
+        function initialize(stations) {
+            var i,
+                marker,
+                c_stations = stations.length,
+                mapOptions = {
+                    center: new google.maps.LatLng(49.001844,-111.2146),
+                    zoom: 3,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                },
+                map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+            for (i=0; i < c_stations; i ++) {
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(stations[i].latitude, stations[i].longitude),
+                    map: map,
+                    title: stations[i].id + ' - ' + stations[i].name + ' - ' + stations[i].location
+                });
+
+                google.maps.event.addListener(marker, 'click', function(url, id){
+                    var target = url;
+                    target = target.replace('987654', id);
+                    return function(){
+                        window.location.href = target;
+                    }
+                }(stations[i].url, stations[i].id));
+            }
         }
 
-        google.maps.event.addDomListener(window, 'load', initialize);
+        google.maps.event.addDomListener(window, 'load', function(){
+            initialize(stations);
+        });
     </script>
 {% endblock scripts %}
