@@ -54,3 +54,32 @@ class Report(models.Model):
     precipitation = models.DecimalField(null=True, max_digits=5, decimal_places=2) # Hourly precip in inches
 
     aggregates = WeatherCSVManager()
+
+
+class Report_Daily(models.Model):
+    """
+    Report_Daily is an aggregation table containing daily report data for all WBANs.
+    """
+    wban = models.ForeignKey(WBAN)
+    date = models.DateTimeField(db_index=True)
+    temp_dry = models.IntegerField()
+    temp_dry_high = models.IntegerField()
+    temp_dry_low = models.IntegerField()
+
+
+class Report_Seasonal(models.Model):
+    """
+    Report_Seasonal is an aggregation table containing seasonal report data for all WBANs.
+    """
+    wban = models.ForeignKey(WBAN)
+    season = models.CharField(max_length=6)
+    temp_dry = models.IntegerField()
+    temp_dry_high = models.IntegerField()
+    temp_dry_low = models.IntegerField()
+    humidity = models.IntegerField()
+    precipitation = models.IntegerField()
+    precipitation_days = models.IntegerField()
+    snow_days = models.IntegerField()
+    wind_speed = models.IntegerField()
+    wind_direction = models.IntegerField()
+
