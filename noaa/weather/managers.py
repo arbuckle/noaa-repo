@@ -44,6 +44,35 @@ class WeatherCSVManager(models.Manager):
                 , temp_dry_2
                 , temp_dry_high_2
                 , temp_dry_low_2
+            FROM (
+                SELECT
+                    "weather_report_daily"."date" as report_date
+                     , "weather_report_daily"."temp_dry" as temp_dry_1
+                     , "weather_report_daily"."temp_dry_high" as temp_dry_high_1
+                     , "weather_report_daily"."temp_dry_low" as temp_dry_low_1
+                FROM "weather_report_daily"
+                WHERE "weather_report_daily"."wban_id" = %s
+            ) agg1 JOIN (
+                SELECT
+                    "weather_report_daily"."date" as report_date
+                     , "weather_report_daily"."temp_dry" as temp_dry_2
+                     , "weather_report_daily"."temp_dry_high" as temp_dry_high_2
+                     , "weather_report_daily"."temp_dry_low" as temp_dry_low_2
+                FROM "weather_report_daily"
+                WHERE "weather_report_daily"."wban_id" = %s
+            )agg2 ON agg1.report_date = agg2.report_date
+            """, [wban_id_1, wban_id_2])
+
+    def comparison_daily_DEPRECATED(self, wban_id_1, wban_id_2):
+        return self.raw("""
+            SELECT row_number() OVER (ORDER BY agg1.report_date) AS id
+                , agg1.report_date as "date"
+                , temp_dry_1
+                , temp_dry_high_1
+                , temp_dry_low_1
+                , temp_dry_2
+                , temp_dry_high_2
+                , temp_dry_low_2
 
             FROM (
                 SELECT  date_trunc('day', "weather_report"."date") as "report_date"

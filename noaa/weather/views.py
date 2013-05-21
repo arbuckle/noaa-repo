@@ -1,9 +1,9 @@
 from collections import OrderedDict
 from django.http.response import Http404
 from django.views.generic.base import TemplateView
-from weather.models import Report
-from weather.models import WBAN
+from weather.models import Report, WBAN, Report_Daily
 from noaa import settings
+import time
 
 class BaseNOAAView(TemplateView):
     """
@@ -152,6 +152,6 @@ class WeatherCSV(BaseNOAAView):
 
         context.update({
             "wban": [wban_id],
-            "records": Report.aggregates.daily(wban_id = wban_id)
+            "records": Report_Daily.objects.filter(wban_id = wban_id)
         })
         return context
