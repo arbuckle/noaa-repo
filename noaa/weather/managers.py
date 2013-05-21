@@ -164,7 +164,6 @@ class WeatherCSVManager(models.Manager):
             i += 1
 
         output = filter(None, output)
-        print output
         return output
 
     def all_seasons_DEPRECATED(self, wban_id):
