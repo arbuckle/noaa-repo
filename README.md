@@ -1,4 +1,4 @@
-###NOAA Weather Data Fun
+##NOAA Weather Data Fun
 
 This is a Django app with accompanying scripts that uses NOAA's QCLCD dataset to display graphs and other meaningful
 aggregations in a glitzy(ish) web frontend.
@@ -13,7 +13,7 @@ Some features:
 * Read a plain-English comparison of the two locations' annual conditions.
 
 
-#If you're interested in playing around with this on your own, here are some not-so-simple instructions:
+###If you're interested in playing around with this on your own, here are some not-so-simple instructions:
 
 - Clone the repository
 - Run manage.py syncdb to create your database schema.  Note that privileged `settings.py` info is stored as environmental variables.
